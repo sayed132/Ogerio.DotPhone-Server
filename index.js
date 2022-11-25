@@ -21,19 +21,32 @@ async function run(){
         const phoneCollections = client.db('ogerioDotPhone').collection('phoneCollection')
         const usersCollections = client.db('ogerioDotPhone').collection('users')
 
-        app.get('/products', async(req, res)=>{
+        app.get('/products-category', async(req, res)=>{
             const query = {};
             const cursor = categoryCollections.find(query).sort({"_id": -01});
             const products = await cursor.toArray();
             res.send(products)
         });
 
-        app.get('/products/:id', async(req, res)=>{
+        app.get('/products-category/:id', async(req, res)=>{
             const id = req.params.id;
             const query = {_id: ObjectId(id)};
             const products = await categoryCollections.findOne(query);
             res.send(products)
         });
+
+        app.get('/add-product/:id', async(req, res)=>{
+            
+            const cursor =  phoneCollections.find({categoryId: req.params.id}).sort({"_id": -01});
+            const product = await cursor.toArray()
+            res.send(product)
+        });
+
+        app.post('/add-product',  async(req, res)=>{
+            const product = req.body;
+            const result = await phoneCollections.insertOne(product);
+            res.send(result)
+        })
 
         app.get('/users', async (req, res) => {
             const query = {};
