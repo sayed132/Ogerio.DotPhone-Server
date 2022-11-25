@@ -1,0 +1,80 @@
+[
+    {
+        "category_name": "Allmost New",
+        "productName": "OnePlus 10 pro",
+        "image": "https://fdn2.gsmarena.com/vv/bigpic/oneplus-10-pro.jpg",
+        "details": "Released 2022, January 13 201g, 8.6mm thickness Android 12, up to 13, OxygenOS 13, ColorOS 128GB/256GB/512GB storage, no card slot",
+        "productLocation": "Barisal, Sadar Road",
+        "uses": "1year",
+        "resellPrice": 45000,
+        "originalPrice": 87000,
+        "postedTime": "25/11/2022, 07:13:44",
+        "sellerName": "Abu Sayed",
+        "sellerEmail": "abu@sayed.com"
+    },
+    {
+        "category_name": "Allmost New",
+        "productName": "OnePlus 9 pro",
+        "image": "https://fdn2.gsmarena.com/vv/bigpic/oneplus-9-pro-.jpg",
+        "details": "Released 2022, January 13 201g, 8.6mm thickness Android 12, up to 13, OxygenOS 13, ColorOS 128GB/256GB/512GB storage, no card slot",
+        "productLocation": "Barisal, Sadar Road",
+        "uses": "1year",
+        "resellPrice": 38000,
+        "originalPrice": 68000,
+        "postedTime": "25/11/2022, 07:13:44",
+        "sellerName": "Abu Sayed",
+        "sellerEmail": "abu@sayed.com"
+    },
+    {
+        "category_name": "Maximum Fresh Phone",
+        "productName": "Samsung s21 ultra",
+        "image": "https://fdn2.gsmarena.com/vv/bigpic/samsung-galaxy-s21-ultra-5g-.jpg",
+        "details": "Released 2021, January 29 227g (Sub6), 229g (mmWave), 8.9mm thickness  Android 11, up to Android 13, One UI 5 128GB/256GB/512GB storage, no card slot",
+        "productLocation": "Dhaka, Mohammedpur 6no. Road",
+        "uses": "1year",
+        "resellPrice": 55000,
+        "originalPrice": 108000,
+        "postedTime": "25/11/2022, 07:13:44",
+        "sellerName": "Abu Sayed",
+        "sellerEmail": "abu@sayed.com"
+    },
+    {
+        "category_name": "Maximum Fresh Phone",
+        "productName": "Samsung s20 ultra",
+        "image": "https://fdn2.gsmarena.com/vv/bigpic/samsung-galaxy-s20-ultra-.jpg",
+        "details": "Released 2021, January 29 227g (Sub6), 229g (mmWave), 8.9mm thickness  Android 11, up to Android 13, One UI 5 128GB/256GB/512GB storage, no card slot",
+        "productLocation": "Dhaka, Mohammedpur 6no. Road",
+        "uses": "1year",
+        "resellPrice": 27000,
+        "originalPrice": 80000,
+        "postedTime": "25/11/2022, 07:13:44",
+        "sellerName": "Abu Sayed",
+        "sellerEmail": "abu@sayed.com"
+    },
+    {
+        "category_name": "Fresh",
+        "productName": "Vivo x70 pro",
+        "image": "https://fdn2.gsmarena.com/vv/bigpic/vivo-x70-pro-r.jpg",
+        "details": "Released 2021, September 17 183/184/185/186g, 8mm thickness Android 11, Funtouch OS 12, OriginOS 1.0  128GB/256GB/512GB storage, no card slot  ",
+        "productLocation": "Cittagong, Dolfin mor",
+        "uses": "1year",
+        "resellPrice": 32000,
+        "originalPrice": 62000,
+        "postedTime": "25/11/2022, 07:13:44",
+        "sellerName": "Abu Sayed",
+        "sellerEmail": "abu@sayed.com"
+    },
+    {
+        "category_name": "Fresh",
+        "productName": "Vivo x70 pro",
+        "image": "https://fdn2.gsmarena.com/vv/bigpic/vivo-x70-pro-r.jpg",
+        "details": "Released 2021, September 17 183/184/185/186g, 8mm thickness Android 11, Funtouch OS 12, OriginOS 1.0  128GB/256GB/512GB storage, no card slot  ",
+        "productLocation": "Cittagong, Dolfin mor",
+        "uses": "1year",
+        "resellPrice": 32000,
+        "originalPrice": 62000,
+        "postedTime": "25/11/2022, 07:13:44",
+        "sellerName": "Abu Sayed",
+        "sellerEmail": "abu@sayed.com"
+    }
+]

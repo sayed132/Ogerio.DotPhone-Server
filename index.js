@@ -42,6 +42,23 @@ async function run(){
             res.send(product)
         });
 
+        // app.get('/reviews',verifyJWT,  async(req, res)=>{
+        //     const decoded = req.decoded;
+        //     console.log('inside api', decoded);
+        //     if(decoded.email !== req.query.email){
+        //         res.status(403).send({message: 'forbidden access'})
+        //     }
+        //     let query = {};
+        //     if (req.query.email) {
+        //         query = {
+        //             email: req.query.email
+        //         }
+        //     }
+        //     const cursor = reviewsCollection.find(query).sort({"_id": -01});
+        //     const reviews = await cursor.toArray();
+        //     res.send(reviews)
+        // });
+
         app.post('/add-product',  async(req, res)=>{
             const product = req.body;
             const result = await phoneCollections.insertOne(product);
