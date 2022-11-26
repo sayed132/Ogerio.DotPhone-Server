@@ -97,6 +97,11 @@ async function run(){
             const results = await phoneCollections.find(query).toArray();
             res.send(results);
         });
+        app.get('/all-products',  async(req, res)=>{
+            const query = {};
+            const products = await phoneCollections.find(query).toArray();
+            res.send(products);
+        });
 
         app.post('/add-product', verifyJWT,  async(req, res)=>{
             const product = req.body;
