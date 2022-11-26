@@ -84,27 +84,31 @@ async function run(){
             res.send(product)
         });
 
-        // app.get('/reviews',verifyJWT,  async(req, res)=>{
-        //     const decoded = req.decoded;
-        //     console.log('inside api', decoded);
-        //     if(decoded.email !== req.query.email){
-        //         res.status(403).send({message: 'forbidden access'})
-        //     }
-        //     let query = {};
-        //     if (req.query.email) {
-        //         query = {
-        //             email: req.query.email
-        //         }
-        //     }
-        //     const cursor = reviewsCollection.find(query).sort({"_id": -01});
-        //     const reviews = await cursor.toArray();
-        //     res.send(reviews)
-        // });
+        app.get('/my-products',verifyJWT,  async(req, res)=>{
 
-        app.post('/add-product',  async(req, res)=>{
+            const sellerEmail = req.query.sellerEmail;
+            
+            const decodedEmail = req.decoded.email;
+
+            if (sellerEmail !== decodedEmail) {
+                return res.status(403).send({ message: 'forbidden access' });
+            }
+            const query = { sellerEmail: sellerEmail };
+            const results = await phoneCollections.find(query).toArray();
+            res.send(results);
+        });
+
+        app.post('/add-product', verifyJWT,  async(req, res)=>{
             const product = req.body;
             const result = await phoneCollections.insertOne(product);
             res.send(result)
+        })
+
+        app.delete('/my-products/:id', verifyJWT, async (req, res) => {
+            const id = req.params.id;
+            const filter = { _id: ObjectId(id) };
+            const result = await phoneCollections.deleteOne(filter);
+            res.send(result);
         })
 
         app.get('/bookings', verifyJWT, async (req, res) => {
@@ -188,13 +192,13 @@ async function run(){
             res.send(result);
         })
 
-        app.put('/users/admin/:id', verifyJWT,   async (req, res) => {
+        app.put('/users/admin/:id', verifyJWT, verifyAdmin,   async (req, res) => {
             const id = req.params.id;
             const filter = { _id: ObjectId(id) }
             const options = { upsert: true };
             const updatedDoc = {
                 $set: {
-                    role: 'admin'
+                    status: 'verify'
                 }
             }
             const result = await usersCollections.updateOne(filter, updatedDoc, options);
