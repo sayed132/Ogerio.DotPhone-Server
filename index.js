@@ -42,6 +42,27 @@ async function run(){
         const bookingCollections = client.db('ogerioDotPhone').collection('bookingCollection')
         const usersCollections = client.db('ogerioDotPhone').collection('users')
 
+        const verifyAdmin = async (req, res, next) =>{
+            const decodedEmail = req.decoded.email;
+            const query = { email: decodedEmail };
+            const user = await usersCollections.findOne(query);
+
+            if (user?.role !== 'admin') {
+                return res.status(403).send({ message: 'forbidden access' })
+            }
+            next();
+        }
+        const verifySeller = async (req, res, next) =>{
+            const decodedAccountType = req.decoded.account_type;
+            const query = { account_type: decodedAccountType };
+            const user = await usersCollections.findOne(query);
+
+            if (user?.account_type !== 'Seller Account') {
+                return res.status(403).send({ message: 'forbidden access' })
+            }
+            next();
+        }
+
         app.get('/products-category', async(req, res)=>{
             const query = {};
             const cursor = categoryCollections.find(query).sort({"_id": -01});
@@ -135,6 +156,20 @@ async function run(){
             res.send(users);
         });
 
+        app.get('/users/admin/:email', async (req, res) => {
+            const email = req.params.email;
+            const query = { email }
+            const user = await usersCollections.findOne(query);
+            res.send({ isAdmin: user?.role === 'admin' });
+        })
+
+        app.get('/users/seller/:email', async (req, res) => {
+            const email = req.params.email;
+            const query = { email }
+            const user = await usersCollections.findOne(query);
+            res.send({ isSeller: user?.account_type === 'Seller Account' });
+        })
+
         app.post('/users', async (req, res) => {
             const user = req.body;
             console.log(user);
@@ -150,6 +185,19 @@ async function run(){
                 }
             }
             const result = await usersCollections.updateOne(user, updatedDoc, options);
+            res.send(result);
+        })
+
+        app.put('/users/admin/:id', verifyJWT,   async (req, res) => {
+            const id = req.params.id;
+            const filter = { _id: ObjectId(id) }
+            const options = { upsert: true };
+            const updatedDoc = {
+                $set: {
+                    role: 'admin'
+                }
+            }
+            const result = await usersCollections.updateOne(filter, updatedDoc, options);
             res.send(result);
         })
 
