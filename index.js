@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const jwt = require('jsonwebtoken');
+const e = require('express');
 require('dotenv').config();
 
 const port = process.env.PORT || 5000;
@@ -128,6 +129,32 @@ async function run(){
             const bookings = await bookingCollections.find(query).toArray();
             res.send(bookings);
         })
+        app.get('/req-order',  async (req, res) => {
+            const sellerEmail = req.query.sellerEmail;
+            
+            // const decodedEmail = req.decoded.email;
+
+            // if (sellerEmail !== decodedEmail) {
+            //     return res.status(403).send({ message: 'forbidden access' });
+            // }
+            const query = { sellerEmail: sellerEmail };
+            const orders = await bookingCollections.find(query).toArray();
+            res.send(orders);
+        })
+
+        app.delete('/bookings/:id', verifyJWT, async (req, res) => {
+            const id = req.params.id;
+            const filter = { _id: ObjectId(id) };
+            const result = await bookingCollections.deleteOne(filter);
+            res.send(result);
+        })
+        
+        app.get('/bookings/:id', async (req,res)=>{
+            const id = req.params.id;
+            const query = { _id: ObjectId(id)};
+            const booking = await bookingCollections.findOne(query);
+            res.send(booking)
+        })
 
         app.post('/bookings', async (req, res) => {
             const booking = req.body;
@@ -197,16 +224,27 @@ async function run(){
             res.send(result);
         })
 
+        app.delete('/admin/users/:id', verifyJWT, async (req, res) => {
+            const id = req.params.id;
+            const filter = { _id: ObjectId(id) };
+            const result = await usersCollections.deleteOne(filter);
+            res.send(result);
+        })
+
         app.put('/users/admin/:id', verifyJWT, verifyAdmin,   async (req, res) => {
             const id = req.params.id;
+            // const sellerEmail = req.params.sellerEmail;
+            // const email = req.query.email
+            // const query = { sellerEmail : email }
             const filter = { _id: ObjectId(id) }
             const options = { upsert: true };
             const updatedDoc = {
                 $set: {
-                    status: 'verify'
+                    verify: true
                 }
             }
             const result = await usersCollections.updateOne(filter, updatedDoc, options);
+            // const result1 = await phoneCollections.updateMany(query, updatedDoc, options);
             res.send(result);
         })
 
