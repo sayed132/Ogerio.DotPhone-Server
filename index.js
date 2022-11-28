@@ -13,6 +13,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@cluster0.taqpwn0.mongodb.net/?retryWrites=true&w=majority`;
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
@@ -42,6 +43,7 @@ async function run(){
         const phoneCollections = client.db('ogerioDotPhone').collection('phoneCollection')
         const bookingCollections = client.db('ogerioDotPhone').collection('bookingCollection')
         const usersCollections = client.db('ogerioDotPhone').collection('users')
+        const paymentsCollection = client.db('ogerioDotPhone').collection('payments');
 
         const verifyAdmin = async (req, res, next) =>{
             const decodedEmail = req.decoded.email;
@@ -170,10 +172,65 @@ async function run(){
             //     const message = `You already have a booking on ${booking.appointmentDate}`
             //     return res.send({acknowledged: false, message})
             // }
+            // const id = req.params.id;
+            // if(id === booking._id){
+            //     const message = `You already have a booking on ${booking.productName}`
+            //     return res.send({acknowledged: false, message})
+            // }
+            
+
+            // const query = {
+            //     email: booking.buyerEmail
+            // }
+            // const alreadyBooked = await bookingCollections.find(query).toArray();
+
+            // if (alreadyBooked === booking.collectionId){
+            //     const message = `You already have a booking on ${booking.productName}`
+            //     return res.send({acknowledged: false, message})
+            // }
 
             const result = await bookingCollections.insertOne(booking);
             res.send(result);
         });
+
+        app.post('/create-payment-intent', async (req,res)=>{
+            const booking = req.body;
+            const price =  booking.resellPrice;
+            const amount = price * 100;
+
+            const paymentIntent = await stripe.paymentIntents.create({
+                // amount: calculateOrderAmount(booking),
+                currency: "usd",
+                amount : amount,
+
+                "payment_method_types": [
+                    "card"
+                  ],
+              });
+              res.send({
+                clientSecret: paymentIntent.client_secret,
+              });
+        });
+
+        app.post('/payments', async (req, res) =>{
+            const payment = req.body;
+            const result = await paymentsCollection.insertOne(payment);
+            const id = payment.bookingId
+            const collectionId = payment.collectionId
+            const filter2 = {collectionId: collectionId}
+            const filter3 = {_id: ObjectId(collectionId)}
+            const filter = {_id: ObjectId(id)}
+            const updatedDoc = {
+                $set: {
+                    paid: true,
+                    transactionId: payment.transactionId
+                }
+            }
+            const deleteResult = await phoneCollections.deleteOne(filter3)
+            const updatedResult2 = await bookingCollections.updateMany(filter2, updatedDoc)
+            const updatedResult = await bookingCollections.updateOne(filter, updatedDoc)
+            res.send(result);
+        })
 
         app.get('/jwt', async (req, res) => {
             const email = req.query.email;
