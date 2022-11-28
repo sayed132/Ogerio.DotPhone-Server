@@ -45,6 +45,7 @@ async function run(){
         const bookingCollections = client.db('ogerioDotPhone').collection('bookingCollection')
         const usersCollections = client.db('ogerioDotPhone').collection('users')
         const paymentsCollection = client.db('ogerioDotPhone').collection('payments');
+        const reportCollections = client.db('ogerioDotPhone').collection('report');
 
         const verifyAdmin = async (req, res, next) =>{
             const decodedEmail = req.decoded.email;
@@ -209,6 +210,18 @@ async function run(){
 
             // const alreadyBooked = await bookingCollections.find(query).toArray();
 
+            const query = {
+                collectionId : booking.collectionId,
+                buyerEmail: booking.buyerEmail,
+            }
+
+            const alreadyBooked = await bookingCollections.find(query).toArray();
+
+            if (alreadyBooked.length){
+                const message = `You already have a booking on ${booking.productName}`
+                return res.send({acknowledged: false, message})
+            }
+
             // if (alreadyBooked.length){
             //     const message = `You already have a booking on ${booking.appointmentDate}`
             //     return res.send({acknowledged: false, message})
@@ -231,6 +244,24 @@ async function run(){
             // }
 
             const result = await bookingCollections.insertOne(booking);
+            res.send(result);
+        });
+
+        app.post('/report-to-admin/:id', async (req, res) => {
+            const report = req.body;
+            const query = {
+                collectionId : report.collectionId,
+                reporterEmail: report.reporterEmail,
+            }
+
+            const alreadyReported = await reportCollections.find(query).toArray();
+
+            if (alreadyReported.length){
+                const message = `You already have a report on ${report.productName}`
+                return res.send({acknowledged: false, message})
+            }
+
+            const result = await reportCollections.insertOne(report);
             res.send(result);
         });
 
@@ -291,6 +322,13 @@ async function run(){
             const users = await usersCollections.find(query).toArray();
             res.send(users);
         });
+
+        app.get('/users-seller', async (req,res)=> {
+            const query = { account_type: "Seller Account"}
+            const result = await usersCollections.find(query).toArray();
+            res.send(result);
+      
+          })
 
         app.get('/users/admin/:email', async (req, res) => {
             const email = req.params.email;
