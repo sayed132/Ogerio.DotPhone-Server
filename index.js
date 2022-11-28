@@ -41,9 +41,11 @@ async function run(){
     try{
         const categoryCollections = client.db('ogerioDotPhone').collection('phoneCategory')
         const phoneCollections = client.db('ogerioDotPhone').collection('phoneCollection')
+        const myProductCollections = client.db('ogerioDotPhone').collection('myProduct')
         const bookingCollections = client.db('ogerioDotPhone').collection('bookingCollection')
         const usersCollections = client.db('ogerioDotPhone').collection('users')
         const paymentsCollection = client.db('ogerioDotPhone').collection('payments');
+        const advertisedCollections = client.db('ogerioDotPhone').collection('advertisedCollection');
 
         const verifyAdmin = async (req, res, next) =>{
             const decodedEmail = req.decoded.email;
@@ -97,25 +99,54 @@ async function run(){
                 return res.status(403).send({ message: 'forbidden access' });
             }
             const query = { sellerEmail: sellerEmail };
-            const results = await phoneCollections.find(query).toArray();
-            res.send(results);
+            // const results = await phoneCollections.find(query).toArray();
+            const results2 = await myProductCollections.find(query).sort({"_id": -01}).toArray();
+            res.send(results2);
         });
+        // app.get('/my-products',verifyJWT,  async(req, res)=>{
+
+        //     const sellerEmail = req.query.sellerEmail;
+            
+        //     const decodedEmail = req.decoded.email;
+
+        //     if (sellerEmail !== decodedEmail) {
+        //         return res.status(403).send({ message: 'forbidden access' });
+        //     }
+        //     const query = { sellerEmail: sellerEmail };
+        //     const results = await phoneCollections.find(query).toArray();
+        //     res.send(results);
+        // });
         app.get('/all-products',  async(req, res)=>{
             const query = {};
-            const products = await phoneCollections.find(query).toArray();
+            const products = await phoneCollections.find(query).sort({"_id": -01}).toArray();
             res.send(products);
         });
 
         app.post('/add-product', verifyJWT,  async(req, res)=>{
             const product = req.body;
             const result = await phoneCollections.insertOne(product);
+            const result2 = await myProductCollections.insertOne(product);
             res.send(result)
         })
+
+        // app.post('/advertised/:id', verifyJWT,  async(req, res)=>{
+        //     const product = req.body;
+        //     const result = await advertisedCollections.insertOne(product);
+        //     // const result2 = await myProductCollections.insertOne(product);
+        //     res.send(result)
+        // })
+
+        // app.get('/advertised', async(req,res)=>{
+        //     const query = {};
+        //     const advertised = await advertisedCollections.find(query).sort({"_id": -01}).toArray();
+        //     res.send(advertised);
+        // })
 
         app.delete('/my-products/:id', verifyJWT, async (req, res) => {
             const id = req.params.id;
             const filter = { _id: ObjectId(id) };
             const result = await phoneCollections.deleteOne(filter);
+            const result2 = await myProductCollections.deleteOne(filter);
             res.send(result);
         })
 
@@ -128,7 +159,7 @@ async function run(){
                 return res.status(403).send({ message: 'forbidden access' });
             }
             const query = { buyerEmail: buyerEmail };
-            const bookings = await bookingCollections.find(query).toArray();
+            const bookings = await bookingCollections.find(query).sort({"_id": -01}).toArray();
             res.send(bookings);
         })
         app.get('/req-order',  async (req, res) => {
@@ -140,7 +171,7 @@ async function run(){
             //     return res.status(403).send({ message: 'forbidden access' });
             // }
             const query = { sellerEmail: sellerEmail };
-            const orders = await bookingCollections.find(query).toArray();
+            const orders = await bookingCollections.find(query).sort({"_id": -01}).toArray();
             res.send(orders);
         })
 
@@ -219,6 +250,7 @@ async function run(){
             const collectionId = payment.collectionId
             const filter2 = {collectionId: collectionId}
             const filter3 = {_id: ObjectId(collectionId)}
+            const filter4 = {_id: ObjectId(collectionId)}
             const filter = {_id: ObjectId(id)}
             const updatedDoc = {
                 $set: {
@@ -229,6 +261,7 @@ async function run(){
             const deleteResult = await phoneCollections.deleteOne(filter3)
             const updatedResult2 = await bookingCollections.updateMany(filter2, updatedDoc)
             const updatedResult = await bookingCollections.updateOne(filter, updatedDoc)
+            const updatedResult3 = await myProductCollections.updateOne(filter4, updatedDoc)
             res.send(result);
         })
 
