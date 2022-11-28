@@ -153,6 +153,14 @@ async function run(){
             const result2 = await myProductCollections.deleteOne(filter);
             res.send(result);
         })
+        app.delete('/all-product/:id', verifyJWT, async (req, res) => {
+            const id = req.params.id;
+            const filter = { _id: ObjectId(id) };
+            const result = await phoneCollections.deleteOne(filter);
+            const result2 = await myProductCollections.deleteOne(filter);
+            res.send(result);
+        })
+        
 
         app.get('/bookings', verifyJWT, async (req, res) => {
             const buyerEmail = req.query.buyerEmail;
@@ -264,6 +272,19 @@ async function run(){
             const result = await reportCollections.insertOne(report);
             res.send(result);
         });
+
+        app.get('/report-to-admin', async (req, res) => {
+            const query = {};
+            const users = await reportCollections.find(query).toArray();
+            res.send(users);
+        });
+
+        app.delete('/report-to-admin/:id', verifyJWT, async (req, res) => {
+            const id = req.params.id;
+            const filter = { _id: ObjectId(id) };
+            const result = await reportCollections.deleteOne(filter);
+            res.send(result);
+        })
 
         app.post('/create-payment-intent', async (req,res)=>{
             const booking = req.body;
