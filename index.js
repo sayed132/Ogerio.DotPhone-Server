@@ -45,7 +45,6 @@ async function run(){
         const bookingCollections = client.db('ogerioDotPhone').collection('bookingCollection')
         const usersCollections = client.db('ogerioDotPhone').collection('users')
         const paymentsCollection = client.db('ogerioDotPhone').collection('payments');
-        const advertisedCollections = client.db('ogerioDotPhone').collection('advertisedCollection');
 
         const verifyAdmin = async (req, res, next) =>{
             const decodedEmail = req.decoded.email;
@@ -103,6 +102,7 @@ async function run(){
             const results2 = await myProductCollections.find(query).sort({"_id": -01}).toArray();
             res.send(results2);
         });
+       
         // app.get('/my-products',verifyJWT,  async(req, res)=>{
 
         //     const sellerEmail = req.query.sellerEmail;
@@ -129,18 +129,21 @@ async function run(){
             res.send(result)
         })
 
-        // app.post('/advertised/:id', verifyJWT,  async(req, res)=>{
-        //     const product = req.body;
-        //     const result = await advertisedCollections.insertOne(product);
-        //     // const result2 = await myProductCollections.insertOne(product);
-        //     res.send(result)
-        // })
 
-        // app.get('/advertised', async(req,res)=>{
-        //     const query = {};
-        //     const advertised = await advertisedCollections.find(query).sort({"_id": -01}).toArray();
-        //     res.send(advertised);
-        // })
+        app.patch("/my-products/:id", async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: ObjectId(id) };
+            const status = req.body.status;
+            const updatedDoc = {
+              $set: {
+                inStore: status,
+              },
+            };
+            const result2 = await myProductCollections.updateOne(query, updatedDoc);
+            const result = await phoneCollections.updateOne(query, updatedDoc);
+      
+            res.send(result);
+          });
 
         app.delete('/my-products/:id', verifyJWT, async (req, res) => {
             const id = req.params.id;
@@ -174,6 +177,13 @@ async function run(){
             const orders = await bookingCollections.find(query).sort({"_id": -01}).toArray();
             res.send(orders);
         })
+        
+        app.get('/advertised', async (req,res)=> {
+            const query = { inStore:true}
+            const result = await phoneCollections.find(query).toArray();
+            res.send(result);
+      
+          })
 
         app.delete('/bookings/:id', verifyJWT, async (req, res) => {
             const id = req.params.id;
